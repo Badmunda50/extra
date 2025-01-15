@@ -1,0 +1,12 @@
+apscheduler
+pyshorteners
+bing-image-urls
+gTTS
+googlesearch-python
+httpx[http2]
+pyfiglet
+lexica-api
+SafoneAPI
+nekos.py
+telegraph
+uuid
