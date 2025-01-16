@@ -9,17 +9,10 @@ from config import START_IMG_URL, SUPPORT_GROUP as SUPPORT_CHAT
 
 
 def content(msg: Message) -> [None, str]:
-    text_to_return = msg.text
-
     if msg.text is None:
         return None
-    if " " in text_to_return:
-        try:
-            return msg.text.split(None, 1)[1]
-        except IndexError:
-            return None
-    else:
-        return None
+    parts = msg.text.split(None, 1)
+    return parts[1] if len(parts) > 1 else None
 
 
 @app.on_message(filters.command("bug"))
@@ -72,7 +65,7 @@ async def bug(_, msg: Message):
                 ),
             )
             await app.send_photo(
-                photo=START_IMG,
+                photo=START_IMG_URL,
                 caption=f"{bug_report}",
                 reply_markup=InlineKeyboardMarkup(
                     [
@@ -92,7 +85,7 @@ async def bug(_, msg: Message):
 
 
 @app.on_callback_query(filters.regex("close_reply"))
-async def close_reply(msg, CallbackQuery):
+async def close_reply(_, CallbackQuery):
     await CallbackQuery.message.delete()
 
 
