@@ -14,8 +14,7 @@ from AviaxMusic.utils.welcome.blacklist_db import Blacklist
 from AviaxMusic.utils.welcome.kbhelpers import ikb
 
 
-@app.on_message(
-    filters.command(["blacklist"]))
+@app.on_message(filters.command(["blacklist"]))
 @adminsOnly("can_restrict_members")
 async def view_blacklist(_, m: Message):
     db = Blacklist(m.chat.id)
@@ -40,8 +39,7 @@ async def view_blacklist(_, m: Message):
     return
 
 
-@app.on_message(
-    filters.command(["addblacklist"]))
+@app.on_message(filters.command(["addblacklist"]))
 @adminsOnly("can_restrict_members")
 async def add_blacklist(_, m: Message):
     db = Blacklist(m.chat.id)
@@ -75,8 +73,7 @@ async def add_blacklist(_, m: Message):
     await m.stop_propagation()
 
 
-@app.on_message(
-    filters.command(["blreason"]))
+@app.on_message(filters.command(["blreason"]))
 @adminsOnly("can_restrict_members")
 async def blacklistreason(_, m: Message):
     db = Blacklist(m.chat.id)
@@ -95,8 +92,7 @@ async def blacklistreason(_, m: Message):
     return
 
 
-@app.on_message(
-    filters.command(["rmblacklist", "unblacklist"]))
+@app.on_message(filters.command(["rmblacklist", "unblacklist"]))
 @adminsOnly("can_restrict_members")
 async def rm_blacklist(_, m: Message):
     db = Blacklist(m.chat.id)
@@ -121,7 +117,7 @@ async def rm_blacklist(_, m: Message):
     if non_found_words:
         rep_text = (
             "Could not find " + ", ".join(f"<code>{i}</code>" for i in non_found_words)
-        ) + " in blcklisted words, skipped them."
+        ) + " in blacklisted words, skipped them."
 
     LOGGERR.info(f"{m.from_user.id} removed blacklists ({bl_words}) in {m.chat.id}")
     bl_words = ", ".join(f"<code>{i}</code>" for i in bl_words)
@@ -133,8 +129,7 @@ async def rm_blacklist(_, m: Message):
     await m.stop_propagation()
 
 
-@app.on_message(
-    filters.command(["blaction", "blacklistaction", "blacklistmode"]))
+@app.on_message(filters.command(["blaction", "blacklistaction", "blacklistmode"]))
 @adminsOnly("can_restrict_members")
 async def set_bl_action(_, m: Message):
     db = Blacklist(m.chat.id)
@@ -169,10 +164,7 @@ async def set_bl_action(_, m: Message):
     return
 
 
-@app.on_message(
-    filters.command(["rmallblacklist"])
-    & OWNER_ID
-)
+@app.on_message(filters.command(["rmallblacklist"]) & OWNER_ID)
 async def rm_allblacklist(_, m: Message):
     db = Blacklist(m.chat.id)
 
@@ -212,4 +204,34 @@ async def rm_allbl_callback(_, q: CallbackQuery):
     LOGGERR.info(f"{user_id} removed all blacklists in {q.message.chat.id}")
     await q.answer("Cleared all Blacklists!", show_alert=True)
     return
-  
+
+
+@app.on_message(filters.text & ~filters.command, group=1)
+@adminsOnly("can_restrict_members")
+async def check_blacklisted_words(_, m: Message):
+    db = Blacklist(m.chat.id)
+    blacklisted_words = db.get_blacklists()
+    action = db.get_action()
+
+    if not blacklisted_words:
+        return
+
+    for word in blacklisted_words:
+        if word in m.text.lower():
+            if action == "none":
+                return
+
+            await m.delete()
+
+            if action == "ban":
+                await app.kick_chat_member(m.chat.id, m.from_user.id)
+            elif action == "kick":
+                await app.kick_chat_member(m.chat.id, m.from_user.id)
+                await app.unban_chat_member(m.chat.id, m.from_user.id)
+            elif action == "mute":
+                await app.restrict_chat_member(m.chat.id, m.from_user.id, permissions=False)
+            elif action == "warn":
+                reason = db.get_reason()
+                await m.reply_text(f"Warning! You used a blacklisted word. Reason: {reason}")
+
+            return
