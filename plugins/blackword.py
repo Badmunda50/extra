@@ -9,7 +9,7 @@ from AviaxMusic import app
 from AviaxMusic.utils.decorators import AdminRightsCheck
 from AviaxMusic.utils.permissions import adminsOnly
 
-from AviaxMusic.utils.welcome.kbhelpers.blacklist_db import Blacklist
+from AviaxMusic.utils.welcome.blacklist_db import Blacklist
 from AviaxMusic.utils.welcome.kbhelpers.kbhelpers import ikb
 
 
