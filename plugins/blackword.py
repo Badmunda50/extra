@@ -234,3 +234,32 @@ async def check_blacklisted_words(_, m: Message):
                 await m.reply_text(f"Warning! You used a blacklisted word. Reason: {reason}")
 
             return
+
+@app.on_edited_message(filters.text)
+async def check_blacklisted_words_on_edit(_, m: Message):
+    db = Blacklist(m.chat.id)
+    blacklisted_words = db.get_blacklists()
+    action = db.get_action()
+
+    if not blacklisted_words:
+        return
+
+    for word in blacklisted_words:
+        if word in m.text.lower():
+            if action == "none":
+                return
+
+            await m.delete()
+
+            if action == "ban":
+                await app.kick_chat_member(m.chat.id, m.from_user.id)
+            elif action == "kick":
+                await app.kick_chat_member(m.chat.id, m.from_user.id)
+                await app.unban_chat_member(m.chat.id, m.from_user.id)
+            elif action == "mute":
+                await app.restrict_chat_member(m.chat.id, m.from_user.id, permissions=False)
+            elif action == "warn":
+                reason = db.get_reason()
+                await m.reply_text(f"Warning! You used a blacklisted word. Reason: {reason}")
+
+            return
