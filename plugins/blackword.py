@@ -4,6 +4,7 @@ from pyrogram import filters
 from pyrogram.enums import ChatMemberStatus as CMS
 from pyrogram.types import CallbackQuery, Message
 
+from config import OWNER_ID
 from AviaxMusic.logging import LOGGERR
 from AviaxMusic import app
 from AviaxMusic.utils.decorators import AdminRightsCheck
