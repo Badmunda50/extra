@@ -55,11 +55,11 @@ async def escape_mentions_using_curly_brackets_wl(
                 else [escape(user.first_name)],
             ),
             username=(
-                "@" + (await escape_markdown(escape(user.username)))
+                "@" + user.username
                 if user.username
-                else (await (mention_html(escape(user.first_name), user.id)))
+                else (await mention_html(escape(user.first_name), user.id))
             ),
-            mention=await (mention_html(escape(user.first_name), user.id)),
+            mention=await mention_html(escape(user.first_name), user.id),
             chatname=escape(m.chat.title)
             if m.chat.type != ChatType.PRIVATE
             else escape(user.first_name),
