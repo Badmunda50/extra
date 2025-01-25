@@ -206,7 +206,7 @@ async def rm_allbl_callback(_, q: CallbackQuery):
     return
 
 
-@app.on_message((filters.text & ~filters.command()), group=1)
+@app.on_message((filters.text & ~filters.command(["command"])), group=1)
 @adminsOnly("can_restrict_members")
 async def check_blacklisted_words(_, m: Message):
     db = Blacklist(m.chat.id)
