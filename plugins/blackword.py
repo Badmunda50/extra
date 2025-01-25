@@ -235,6 +235,7 @@ async def check_blacklisted_words(_, m: Message):
 
             return
 
+
 @app.on_edited_message(filters.text)
 async def check_blacklisted_words_on_edit(_, m: Message):
     db = Blacklist(m.chat.id)
