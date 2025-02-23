@@ -72,44 +72,6 @@ async def escape_mentions_using_curly_brackets_wl(
 
     return teks
 
-async def escape_mentions_using_curly_brackets_wl(
-    m: ChatMemberUpdated,
-    n: bool,
-    text: str,
-    parse_words: list,
-) -> str:
-    teks = await escape_invalid_curly_brackets(text, parse_words)
-    if n:
-        user = m.new_chat_member.user if m.new_chat_member else m.from_user
-    else:
-        user = m.old_chat_member.user if m.old_chat_member else m.from_user
-    if teks:
-        teks = teks.format(
-            first=escape(user.first_name),
-            last=escape(user.last_name or user.first_name),
-            fullname=" ".join(
-                [
-                    escape(user.first_name),
-                    escape(user.last_name),
-                ]
-                if user.last_name
-                else [escape(user.first_name)],
-            ),
-            username=(
-                "@" + user.username
-                if user.username
-                else (await mention_html(escape(user.first_name), user.id))
-            ),
-            mention=await mention_html(escape(user.first_name), user.id),
-            chatname=escape(m.chat.title)
-            if m.chat.type != ChatType.PRIVATE
-            else escape(user.first_name),
-            id=user.id,
-        )
-    else:
-        teks = ""
-
-    return teks
 
 @app.on_message(
     filters.command(["cleanwelcome"]))
