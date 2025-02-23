@@ -341,6 +341,7 @@ async def member_has_joined(c: app, member: ChatMemberUpdated):
         "mention",
         "id",
         "chatname",
+        "time",
     ]
     hmm = await escape_mentions_using_curly_brackets_wl(member, True, oo, parse_words)
     if status:
@@ -412,6 +413,7 @@ async def member_has_left(c: app, member: ChatMemberUpdated):
         "username",
         "mention",
         "chatname",
+        "time",
     ]
 
     user = member.old_chat_member.user if member.old_chat_member else member.from_user
