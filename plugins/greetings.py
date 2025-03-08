@@ -158,7 +158,7 @@ async def save_wlcm(_, m: Message):
         return
     if not (m.reply_to_message and m.reply_to_message.text) and len(m.command) == 0:
         await m.reply_text(
-            "ᴇʀʀᴏʀ: ᴛʜᴇʀᴇ ɪꜱ ɴᴏ ᴛᴇxᴛ ɪɴ ʜᴇʀᴇ! ᴀɴᴅ ᴏɴʟʏ ᴛᴇxᴛ ᴡɪᴛʜ ʙᴜᴛᴛᴏɴꜱ ᴀʀᴇ ꜱᴜᴘᴘᴏʀᴛᴇᴅ ᴄᴜʀʀᴇɴᴛʟʏ[...]
+            "ᴇʀʀᴏʀ: ᴛʜᴇʀᴇ ɪꜱ ɴᴏ ᴛᴇxᴛ ɪɴ ʜᴇʀᴇ! ᴀɴᴅ ᴏɴʟʏ ᴛᴇxᴛ ᴡɪᴛʜ ʙᴜᴛᴛᴏɴꜱ ᴀʀᴇ ꜱᴜᴘᴘᴏʀᴛᴇᴅ ᴄᴜʀʀᴇɴᴛʟʏ !",
         )
         return
     text, msgtype, file = await get_wlcm_type(m)
@@ -196,7 +196,7 @@ async def save_gdbye(_, m: Message):
         return
     if not (m.reply_to_message and m.reply_to_message.text) and len(m.command) == 0:
         await m.reply_text(
-            "ᴇʀʀᴏʀ: ᴛʜᴇʀᴇ ɪꜱ ɴᴏ ᴛᴇxᴛ ɪɴ ʜᴇʀᴇ! ᴀɴᴅ ᴏɴʟʏ ᴛᴇxᴛ ᴡɪᴛʜ ʙᴜᴛᴛᴏɴꜱ ᴀʀᴇ ꜱᴜᴘᴘᴏʀᴛᴇᴅ ᴄᴜʀʀᴇɴᴛʟʏ[...]
+            "ᴇʀʀᴏʀ: ᴛʜᴇʀᴇ ɪꜱ ɴᴏ ᴛᴇxᴛ ɪɴ ʜᴇʀᴇ! ᴀɴᴅ ᴏɴʟʏ ᴛᴇxᴛ ᴡɪᴛʜ ʙᴜᴛᴛᴏɴꜱ ᴀʀᴇ ꜱᴜᴘᴘᴏʀᴛᴇᴅ ᴄᴜʀʀᴇɴᴛʟʏ !",
         )
         return
     text, msgtype, file = await get_wlcm_type(m)
