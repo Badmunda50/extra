@@ -36,6 +36,7 @@ async def escape_mentions_using_curly_brackets_wl(
     n: bool,
     text: str,
     parse_words: list,
+    total_members: int,
 ) -> str:
     teks = await escape_invalid_curly_brackets(text, parse_words)
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -66,6 +67,7 @@ async def escape_mentions_using_curly_brackets_wl(
             else escape(user.first_name),
             id=user.id,
             time=current_time,  # Add the current time here
+            totalmember=total_members,  # Add the total member count here
         )
     else:
         teks = ""
@@ -156,7 +158,7 @@ async def save_wlcm(_, m: Message):
         return
     if not (m.reply_to_message and m.reply_to_message.text) and len(m.command) == 0:
         await m.reply_text(
-            "ᴇʀʀᴏʀ: ᴛʜᴇʀᴇ ɪꜱ ɴᴏ ᴛᴇxᴛ ɪɴ ʜᴇʀᴇ! ᴀɴᴅ ᴏɴʟʏ ᴛᴇxᴛ ᴡɪᴛʜ ʙᴜᴛᴛᴏɴꜱ ᴀʀᴇ ꜱᴜᴘᴘᴏʀᴛᴇᴅ ᴄᴜʀʀᴇɴᴛʟʏ !",
+            "ᴇʀʀᴏʀ: ᴛʜᴇʀᴇ ɪꜱ ɴᴏ ᴛᴇxᴛ ɪɴ ʜᴇʀᴇ! ᴀɴᴅ ᴏɴʟʏ ᴛᴇxᴛ ᴡɪᴛʜ ʙᴜᴛᴛᴏɴꜱ ᴀʀᴇ ꜱᴜᴘᴘᴏʀᴛᴇᴅ ᴄᴜʀʀᴇɴᴛʟʏ[...]
         )
         return
     text, msgtype, file = await get_wlcm_type(m)
@@ -194,7 +196,7 @@ async def save_gdbye(_, m: Message):
         return
     if not (m.reply_to_message and m.reply_to_message.text) and len(m.command) == 0:
         await m.reply_text(
-            "ᴇʀʀᴏʀ: ᴛʜᴇʀᴇ ɪꜱ ɴᴏ ᴛᴇxᴛ ɪɴ ʜᴇʀᴇ! ᴀɴᴅ ᴏɴʟʏ ᴛᴇxᴛ ᴡɪᴛʜ ʙᴜᴛᴛᴏɴꜱ ᴀʀᴇ ꜱᴜᴘᴘᴏʀᴛᴇᴅ ᴄᴜʀʀᴇɴᴛʟʏ !",
+            "ᴇʀʀᴏʀ: ᴛʜᴇʀᴇ ɪꜱ ɴᴏ ᴛᴇxᴛ ɪɴ ʜᴇʀᴇ! ᴀɴᴅ ᴏɴʟʏ ᴛᴇxᴛ ᴡɪᴛʜ ʙᴜᴛᴛᴏɴꜱ ᴀʀᴇ ꜱᴜᴘᴘᴏʀᴛᴇᴅ ᴄᴜʀʀᴇɴᴛʟʏ[...]
         )
         return
     text, msgtype, file = await get_wlcm_type(m)
@@ -304,8 +306,11 @@ async def member_has_joined(c: app, member: ChatMemberUpdated):
         "id",
         "chatname",
         "time",
+        "totalmember",
     ]
-    hmm = await escape_mentions_using_curly_brackets_wl(member, True, oo, parse_words)
+
+    total_members = await c.get_chat_members_count(member.chat.id)
+    hmm = await escape_mentions_using_curly_brackets_wl(member, True, oo, parse_words, total_members)
     if status:
         tek, button = await parse_button(hmm)
         button = await build_keyboard(button)
@@ -376,11 +381,13 @@ async def member_has_left(c: app, member: ChatMemberUpdated):
         "mention",
         "chatname",
         "time",
+        "totalmember",
     ]
 
     user = member.old_chat_member.user if member.old_chat_member else member.from_user
 
-    hmm = await escape_mentions_using_curly_brackets_wl(member, False, oo, parse_words)
+    total_members = await c.get_chat_members_count(member.chat.id)
+    hmm = await escape_mentions_using_curly_brackets_wl(member, False, oo, parse_words, total_members)
     if status:
         tek, button = await parse_button(hmm)
         button = await build_keyboard(button)
@@ -431,8 +438,8 @@ async def member_has_left(c: app, member: ChatMemberUpdated):
             return
     else:
         return
-
-
+        
+        
 @app.on_message(
     filters.command(["welcome"]))
 @adminsOnly("can_restrict_members")
@@ -497,8 +504,7 @@ async def welcome(c: app, m: Message):
             reply_markup=button,
         )
     return
-
-
+    
 @app.on_message(
     filters.command(["goodbye"]))
 @adminsOnly("can_restrict_members")
@@ -562,8 +568,7 @@ async def goodbye(c: app, m: Message):
         )
     return
     return
-
-
+    
 __MODULE__ = "ᴡᴇʟᴄᴏᴍᴇ"
 __HELP__ = """
 **ɢʀᴇᴇᴛɪɴɢꜱ**
